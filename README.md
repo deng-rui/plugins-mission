@@ -5,7 +5,7 @@ https://github.com/ydlover/mindustry_mission_server
 
 ## command
 
-mission <maps name>
+mission-map_name Administrators only  
 
 ## Mission map name index
 groundZero  
