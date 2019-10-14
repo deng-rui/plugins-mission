@@ -1,6 +1,6 @@
 ## Acknowledgement
 
-Mission ideas come from
+Mission ideas come from  
 https://github.com/ydlover/mindustry_mission_server
 
 ## command
@@ -8,17 +8,17 @@ https://github.com/ydlover/mindustry_mission_server
 mission <maps name>
 
 ## Mission map name index
-groundZero
-craters
-frozenForest
-ruinousShores
-stainedMountains
-tarFields
-saltFlats
-overgrowth
-desolateRift
-desertWastes
-nuclearProductionComplex
+groundZero  
+craters  
+frozenForest  
+ruinousShores  
+stainedMountains  
+tarFields  
+saltFlats  
+overgrowth  
+desolateRift  
+desertWastes  
+nuclearProductionComplex  
 
 ### Building a Jar
 
