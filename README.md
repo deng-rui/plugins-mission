@@ -1,3 +1,8 @@
+## Acknowledgement
+
+Mission ideas come from
+https://github.com/ydlover/mindustry_mission_server
+
 ## command
 
 mission <maps name>
