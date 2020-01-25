@@ -4,75 +4,79 @@ import java.io.*;
 import java.net.*;
 //Java
 
-import io.anuke.arc.*;
-import io.anuke.arc.util.*;
+import arc.*;
+import arc.util.*;
 //Arc
-
-import io.anuke.mindustry.core.*;
-import io.anuke.mindustry.core.GameState.*;
-import io.anuke.mindustry.content.*;
-import io.anuke.mindustry.entities.*;
-import io.anuke.mindustry.entities.type.*;
-import io.anuke.mindustry.game.*;
-import io.anuke.mindustry.game.EventType;
-import io.anuke.mindustry.gen.*;
-import io.anuke.mindustry.io.*;
-import io.anuke.mindustry.maps.Map;
-import io.anuke.mindustry.maps.*;
-import io.anuke.mindustry.net.Packets.KickReason;
-import io.anuke.mindustry.net.NetConnection;
-import io.anuke.mindustry.plugin.*;
-import io.anuke.mindustry.plugin.Plugin;
-import io.anuke.mindustry.type.*;
-import io.anuke.mindustry.Vars;
-import io.anuke.mindustry.world.*;
-import io.anuke.mindustry.game.EventType.*;
+import mindustry.world.*;
+import mindustry.game.EventType.*;
+import mindustry.*;
+import mindustry.core.*;
+import mindustry.core.GameState.*;
+import mindustry.content.*;
+import mindustry.entities.*;
+import mindustry.entities.type.*;
+import mindustry.game.*;
+import mindustry.game.Team;
+import mindustry.game.Difficulty;
+import mindustry.game.EventType;
+import mindustry.game.EventType.PlayerJoin;
+import mindustry.gen.*;
+import mindustry.io.*;
+import mindustry.maps.Map;
+import mindustry.maps.*;
+import mindustry.net.Administration.PlayerInfo ;
+import mindustry.net.Packets.KickReason;
+import mindustry.net.NetConnection;
+import mindustry.net.Packets.KickReason ;
+import mindustry.plugin.*;
+import mindustry.plugin.Plugin;
+import mindustry.type.*;
+import mindustry.Vars;
+import mindustry.content.Zones;
 //Mindustry
 
-import static io.anuke.arc.Core.*;
-import static io.anuke.mindustry.Vars.*;
-import static io.anuke.mindustry.Vars.net;
+import static arc.Core.*;
+import static mindustry.Vars.*;
+import static mindustry.Vars.net;
 
 public class Main extends Plugin{
 	@Override
-	public void registerClientCommands(CommandHandler handler){
+	public void registerServerCommands(CommandHandler handler){
 
-		handler.<Player>register("mission","<mapname>","to mission", (args, player) -> {
-			if(!player.isAdmin){
-				player.sendMessage("no admins");
-			} else {
+		handler.register("mission","<mapname>","to mission", arg -> {
+			if(state.is(State.playing)){
+				return;
+			}
 					netServer.kickAll(KickReason.gameover);
 					state.set(State.menu);
-					net.closeServer();
-					logic.reset();
-	            try{
-	                if("groundZero".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.groundZero);
-	                }else if ("craters".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.craters);
-	                }else if ("frozenForest".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.frozenForest);
-	                }else if ("ruinousShores".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.ruinousShores);
-	                }else if ("stainedMountains".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.stainedMountains);
-	                }else if ("tarFields".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.tarFields);
-	                }else if ("saltFlats".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.saltFlats);
-	                }else if ("overgrowth".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.overgrowth);
-	                }else if ("desolateRift".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.desolateRift);
-	                }else if ("desertWastes".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.desertWastes);
-	                }else if ("nuclearProductionComplex".equalsIgnoreCase(args[0])){
-	                    playZone(Zones.nuclearComplex);
-	                }else{
-	                    playZone(Zones.nuclearComplex);
-	                }
+				try{
+					if("groundZero".equalsIgnoreCase(arg[0])){
+						playZone(Zones.groundZero);
+					}else if ("craters".equalsIgnoreCase(arg[0])){
+						playZone(Zones.craters);
+					}else if ("frozenForest".equalsIgnoreCase(arg[0])){
+						playZone(Zones.frozenForest);
+					}else if ("ruinousShores".equalsIgnoreCase(arg[0])){
+						playZone(Zones.ruinousShores);
+					}else if ("stainedMountains".equalsIgnoreCase(arg[0])){
+						playZone(Zones.stainedMountains);
+					}else if ("tarFields".equalsIgnoreCase(arg[0])){
+						playZone(Zones.tarFields);
+					}else if ("saltFlats".equalsIgnoreCase(arg[0])){
+						playZone(Zones.saltFlats);
+					}else if ("overgrowth".equalsIgnoreCase(arg[0])){
+						playZone(Zones.overgrowth);
+					}else if ("desolateRift".equalsIgnoreCase(arg[0])){
+						playZone(Zones.desolateRift);
+					}else if ("desertWastes".equalsIgnoreCase(arg[0])){
+						playZone(Zones.desertWastes);
+					}else if ("nuclearProductionComplex".equalsIgnoreCase(arg[0])){
+						playZone(Zones.nuclearComplex);
+					}else{
+						playZone(Zones.nuclearComplex);
+					}
 
-	                try{
+					try{
 						net.host(Core.settings.getInt("port"));
 					}catch(BindException e){
 						state.set(State.menu);
@@ -80,25 +84,30 @@ public class Main extends Plugin{
 						state.set(State.menu);
 					}
 
-	                }catch(MapException e){
-	                }
-			}
+					}catch(MapException e){
+					}
 		});
 		//It can be used normally. :)
 	}
 
 	public void playZone(Zone zone){
-            logic.reset();
-            world.loadGenerator(zone.generator);
-            state.rules.zone = zone;
-            for(Tile core : state.teams.get(defaultTeam).cores){
-                for(ItemStack stack : zone.getStartingItems()){
-                    core.entity.items.add(stack.item, stack.amount);
-                }
-            }
-            state.set(State.playing);
-            logic.play();
-            Events.fire(Trigger.newGame);
-    }
+			//ui.loadAnd(() -> {
+				logic.reset();
+				//net.reset();
+				world.loadGenerator(zone.generator);
+				zone.rules.get(state.rules);
+				state.rules.zone = zone;
+				for(TileEntity core : state.teams.playerCores()){
+					for(ItemStack stack : zone.getStartingItems()){
+						core.items.add(stack.item, stack.amount);
+					}
+				}
+				state.set(State.playing);
+				state.wavetime = state.rules.waveSpacing;
+				//saves.zoneSave();
+				logic.play();
+				Events.fire(Trigger.newGame);
+			//});
+	}
 
 }
