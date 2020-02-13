@@ -77,11 +77,9 @@ public class Main extends Plugin{
 					}
 
 					try{
-						net.host(Core.settings.getInt("port"));
+						netServer.openServer();
 						System.out.println("mindustry mission to start");
-					}catch(BindException e){
-						state.set(State.menu);
-					}catch(IOException e){
+					}catch(Exception e){
 						state.set(State.menu);
 					}
 
